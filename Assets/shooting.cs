@@ -9,8 +9,27 @@ public class shooting : MonoBehaviour
     public GameObject gun;
     public GameObject bullet1;
     public float bulletforce = 25;
+    public int ammo = 3;
+    public bool inAmmoPoint = false;
     //Vector3 diraction;
     // Start is called before the first frame update
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
+        {
+            Debug.Log("in");
+            inAmmoPoint = true;
+        }
+    }
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
+        {
+            Debug.Log("out");
+            inAmmoPoint = false;
+        }
+    }
     void Start()
     {
         
@@ -19,8 +38,11 @@ public class shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && ammo > 0)
+        {
             shoot();
+            ammo -= 1;
+        }
     }
 
     void shoot()
@@ -30,7 +52,7 @@ public class shooting : MonoBehaviour
         RaycastHit aimed;
         if(Physics.Raycast(playerCam.transform.position,playerCam.transform.forward,out aimed))
         {
-            Debug.Log(aimed.transform.name);
+            //Debug.Log(aimed.transform.name);
             Vector3 targetDir = (aimed.point - gun.transform.position).normalized;
             newbullet.GetComponent<Rigidbody>().AddForce(targetDir * bulletforce, ForceMode.Impulse);
 

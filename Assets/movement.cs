@@ -15,6 +15,9 @@ public class movement : MonoBehaviour
     public bool isground;
     Vector3 velocity;
     bool jump = false;
+
+   
+
     // Start is called before the first frame update
     void Start()
     {
