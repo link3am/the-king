@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class shooting : MonoBehaviour
 {
 
@@ -10,26 +10,33 @@ public class shooting : MonoBehaviour
     public GameObject bullet1;
     public float bulletforce = 25;
     public int ammo = 3;
+    public Text ammoDisplay;
+    public Text fillammo;
     public bool inAmmoPoint = false;
     //Vector3 diraction;
-    // Start is called before the first frame update
-
+    
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
         {
             Debug.Log("in");
             inAmmoPoint = true;
+            fillammo.text = "Hold F key to fill snowball";
         }
-    }
+      
+
+     }
     private void OnTriggerExit(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
         {
             Debug.Log("out");
             inAmmoPoint = false;
+            fillammo.text = "";
         }
     }
+
+ 
     void Start()
     {
         
@@ -38,13 +45,26 @@ public class shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       
+       
         if (Input.GetButtonDown("Fire1") && ammo > 0)
         {
             shoot();
             ammo -= 1;
         }
-    }
+        if (Input.GetButtonDown("Fire2") && inAmmoPoint == true)
+        {
+            ammo++;
+        }
 
+        ammoDisplay.text = "ammo: " + ammo.ToString();
+  
+    }
+   //private void LateUpdate()
+   //{
+   //    inAmmoPoint = false;
+   //    fillammo.text = "";
+   //}
     void shoot()
     {
         GameObject newbullet = Instantiate(bullet1, gun.transform.position, Quaternion.identity);
