@@ -68,17 +68,17 @@ public class shooting : MonoBehaviour
     void shoot()
     {
         GameObject newbullet = Instantiate(bullet1, gun.transform.position, Quaternion.identity);
-
-        RaycastHit aimed;
-        if(Physics.Raycast(playerCam.transform.position,playerCam.transform.forward,out aimed))
-        {
-            //Debug.Log(aimed.transform.name);
-            Vector3 targetDir = (aimed.point - gun.transform.position).normalized;
-            newbullet.GetComponent<Rigidbody>().AddForce(targetDir * bulletforce, ForceMode.Impulse);
-
-
-        }
-        else
+        newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
+        //RaycastHit aimed;
+        //if(Physics.Raycast(playerCam.transform.position,playerCam.transform.forward,out aimed))
+        //{
+        //    //Debug.Log(aimed.transform.name);
+        //    Vector3 targetDir = (aimed.point - gun.transform.position).normalized;
+        //    newbullet.GetComponent<Rigidbody>().AddForce(targetDir * bulletforce, ForceMode.Impulse);
+        //
+        //
+        //}
+        //else
             newbullet.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
 
 

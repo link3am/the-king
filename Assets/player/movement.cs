@@ -5,7 +5,8 @@ using UnityEngine;
 public class movement : MonoBehaviour
 {
 
-    public CharacterController controller;
+     CharacterController controller;
+   
     public float speed = 12f;
     public float downforce = -9.8f;
     public LayerMask ground;
@@ -16,14 +17,27 @@ public class movement : MonoBehaviour
     Vector3 velocity;
     bool jump = false;
 
-   
+    public float snowballforce = 20f;
+    Vector3 hitbackMoving;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        controller = GetComponent<CharacterController>();
     }
 
+    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
+        {
+            hitbackMoving += collision.gameObject.GetComponent<snowball>().getshooter() * snowballforce;
+
+            //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
+            hitbackMoving.y = 0f;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -38,8 +52,6 @@ public class movement : MonoBehaviour
         //is ground check
         isground = Physics.CheckSphere(groundcheck.position, 0.6f, ground);
 
-
-        
         //downforce
         velocity.y += downforce*Time.deltaTime;
 
@@ -51,10 +63,19 @@ public class movement : MonoBehaviour
         }
         if (isground && velocity.y < 0)
         { velocity.y = -2f; }
+
+        //hitback reset
+
         
-        
+        if (hitbackMoving.magnitude > 0.2f)
+        {
+           controller.Move(hitbackMoving * Time.deltaTime);
+        }
+        hitbackMoving = Vector3.Lerp(hitbackMoving, Vector3.zero, 3 * Time.deltaTime);
         //
 
+
+        //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
     }
 }

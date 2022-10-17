@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3397910200895544666}
   - component: {fileID: 3397910200895544670}
   - component: {fileID: 3397910200895544669}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: snowball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3397910200895544664
 MeshFilter:
