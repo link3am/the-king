@@ -32,8 +32,8 @@ public class movement : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
-            hitbackMoving += collision.gameObject.GetComponent<snowball>().getshooter() * snowballforce;
-
+            hitbackMoving += collision.gameObject.GetComponent<snowball>().getdir() * snowballforce;
+            
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
             hitbackMoving.y = 0f;
         }
@@ -64,7 +64,7 @@ public class movement : MonoBehaviour
         if (isground && velocity.y < 0)
         { velocity.y = -2f; }
 
-        //hitback reset
+        //hitback reduce
 
         
         if (hitbackMoving.magnitude > 0.2f)

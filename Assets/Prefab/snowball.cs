@@ -19,7 +19,7 @@ public class snowball : MonoBehaviour
         shooter = aa;
         dir = bb.normalized;
     }
-    public Vector3 getshooter()
+    public Vector3 getdir()
     {
         return dir;
     }
@@ -33,7 +33,10 @@ public class snowball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+       if(transform.position.y < -10)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     
