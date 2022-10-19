@@ -32,10 +32,12 @@ public class movement : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
+            HealthManager.instance.ChangeHealth(1);
             hitbackMoving += collision.gameObject.GetComponent<snowball>().getdir() * snowballforce;
             
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
             hitbackMoving.y = 0f;
+            
         }
     }
     // Update is called once per frame
