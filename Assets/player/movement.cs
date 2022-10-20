@@ -77,5 +77,7 @@ public class movement : MonoBehaviour
 
         //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
+
+     
     }
 }

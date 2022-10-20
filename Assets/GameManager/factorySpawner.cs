@@ -39,6 +39,8 @@ public class factorySpawner : MonoBehaviour
             xPos = Random.Range(25, -25);
             zPos = Random.Range(25, -25);
             temp = Instantiate(enemy, new Vector3(xPos, 4, zPos), transform.rotation);
+            temp.gameObject.tag = "enemy";
+            
             temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
         }
 
