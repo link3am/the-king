@@ -5,19 +5,19 @@ using CrossHairColor;
 
 public class CrossHair : MonoBehaviour
 {
-    public int Color;
-    
+    private int a;
     public ChooseColour helperClass;
     
     // Start is called before the first frame update
     void Start()
     {
-        helperClass.WhatColour(Color);
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        helperClass.WhatColour(a);
     }
 }
