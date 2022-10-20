@@ -7,6 +7,8 @@ public class MainMenu : MonoBehaviour
 {
 
     public string Game;
+
+    public GameObject Options;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,11 +28,11 @@ public class MainMenu : MonoBehaviour
 
     public void OpenOptions()
     {
-
+        Options.SetActive(true);
     }
     public void CloseOptions()
     {
-
+        Options.SetActive(false);
     }
     public void Exit()
     {
