@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 187527662374715551}
   m_Layer: 10
   m_Name: enemy
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -117,4 +117,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snowballforce: 20
   bullet1: {fileID: 3397910200895544667, guid: bab1f18cc5006c94892c76b3e093dd30, type: 3}
-  player: {fileID: 0}
