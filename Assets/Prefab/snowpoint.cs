@@ -14,9 +14,13 @@ public class snowpoint : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= pointLife )
             gameObject.transform.position = new Vector3(0, -50, 0);
-        
-        if(timer > pointLife +1)
-            Destroy(gameObject);
+
+        if (timer > pointLife + 1)
+        {
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
+            timer = 0.0f;
+        }
 
     }
 

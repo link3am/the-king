@@ -54,17 +54,19 @@ public class enemy : MonoBehaviour
         }
         hitbackMoving = Vector3.Lerp(hitbackMoving, Vector3.zero, 3 * Time.deltaTime);
         //
-
+        //gravity
         controller.Move(Vector3.down * 5 * Time.deltaTime);
         //hitback reset
         controller.Move(velocity * Time.deltaTime);
 
+        //face player
+        gameObject.transform.LookAt(playerPos);
 
        
         timer += Time.deltaTime;
         if (timer > level)
         {
-            shoot();
+            //shoot();
             timer = 0f;
         }
 
@@ -76,10 +78,15 @@ public class enemy : MonoBehaviour
     }
     void shoot()
     {
-        GameObject newbullet = Instantiate(bullet1, this.transform.position, Quaternion.identity);
+        //GameObject newbullet = Instantiate(bullet1, this.transform.position, Quaternion.identity);
+        GameObject newbullet = objectPooler.instance.getFromPool("bullet", this.transform.position, Quaternion.identity);
+
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, aimplayer());
-        
-        newbullet.GetComponent<Rigidbody>().AddForce(aimplayer() * 20, ForceMode.Impulse);
+        //newbullet.GetComponent<Rigidbody>().AddForce(aimplayer() * 20, ForceMode.Impulse);
+        Rigidbody rb = newbullet.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.AddForce(aimplayer() * 20, ForceMode.Impulse);
+
     }
     Vector3 aimplayer()
     {
@@ -90,16 +97,19 @@ public class enemy : MonoBehaviour
     public void setenemy(int lv,Subject subject)
     {
         level = 6-lv;
-        Debug.Log("level " + lv + " enemy set");
+        //Debug.Log("level " + lv + " enemy set");
         this.subject = subject;
     }
     void deathcheck()
     {
         if (transform.position.y < -10)
         {
-           
+           //observer call
             subject.Notify(this.gameObject);
+
+            timer = 0f;
             Destroy(this.gameObject);
+            
 
         }
     }
