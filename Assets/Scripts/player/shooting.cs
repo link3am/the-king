@@ -6,7 +6,7 @@ public class shooting : MonoBehaviour
 {
 
     public Camera playerCam;
-    public GameObject gun;
+    public GameObject gunPoint;
     public GameObject bullet1;
     public float bulletforce = 25;
     public int ammo = 3;
@@ -19,7 +19,7 @@ public class shooting : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
         {
-            Debug.Log("in");
+            //Debug.Log("in");
             inAmmoPoint = true;
             fillammo.text = "Hold F key to fill snowball";
         }
@@ -30,7 +30,7 @@ public class shooting : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
         {
-            Debug.Log("out");
+            //Debug.Log("out");
             inAmmoPoint = false;
             fillammo.text = "";
         }
@@ -67,7 +67,10 @@ public class shooting : MonoBehaviour
    //}
     void shoot()
     {
-        GameObject newbullet = Instantiate(bullet1, gun.transform.position, Quaternion.identity);
+        //GameObject newbullet = Instantiate(bullet1, gun.transform.position, Quaternion.identity);
+        GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
+
+
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
         //RaycastHit aimed;
         //if(Physics.Raycast(playerCam.transform.position,playerCam.transform.forward,out aimed))
@@ -79,8 +82,12 @@ public class shooting : MonoBehaviour
         //
         //}
         //else
-            newbullet.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
 
+
+        //newbullet.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
+        Rigidbody rb = newbullet.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
 
 
     }
