@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class factory : MonoBehaviour
+public class Command : MonoBehaviour
 {
-    private MonoBehaviour snowpoint;
-    private MonoBehaviour enemy;
+    public GameObject enemy;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,12 +14,9 @@ public class factory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    public MonoBehaviour getAsnowpoint()
-    {
-        return Instantiate(snowpoint);
-        
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            Instantiate(enemy, new Vector3(0, 4, 0), transform.rotation);
+        }
     }
 }
