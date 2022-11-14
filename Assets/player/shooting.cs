@@ -67,7 +67,7 @@ public class shooting : MonoBehaviour
    //}
     void shoot()
     {
-        //GameObject newbullet = Instantiate(bullet1, gun.transform.position, Quaternion.identity);
+        //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
         GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
 
 

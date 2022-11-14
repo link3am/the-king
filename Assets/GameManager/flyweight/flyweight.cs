@@ -17,12 +17,13 @@ public class flyweight : MonoBehaviour
 
     void loadsnowman()
     {
-       
-        for (int i = 0; i < 3; i++)
+        snowman temper = new snowman();
+        for (int i = 0; i < 100; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 100; j++)
             {
-                snowman temper = new snowman();
+
+                temper.snowmanID = i * 100 + j;
                 temper.snowmanPos = new Vector3(Random.Range(-10,10), 2, Random.Range(-10, 10));
                 allsnowman.Add(temper);
             }
@@ -34,7 +35,7 @@ public class flyweight : MonoBehaviour
     {
         foreach (snowman snowman in allsnowman)
         {
-            snowman.printpos();
+            snowman.snowmanset();
             
         }
     }
