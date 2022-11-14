@@ -51,6 +51,7 @@ public class shooting : MonoBehaviour
         {
             shoot();
             ammo -= 1;
+            SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot);
         }
         if (Input.GetButtonDown("Fire2") && inAmmoPoint == true)
         {
