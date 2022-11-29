@@ -17,7 +17,7 @@ public class movement : MonoBehaviour
     Vector3 velocity;
     bool jump = false;
 
-    public float snowballforce = 20f;
+    public float hitbackforce = 20f;
     Vector3 hitbackMoving;
 
     // Start is called before the first frame update
@@ -33,7 +33,7 @@ public class movement : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
             HealthManager.instance.ChangeHealth(5);
-            hitbackMoving += collision.gameObject.GetComponent<snowball>().getdir() * snowballforce;
+            hitbackMoving += collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce;
             
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
             hitbackMoving.y = 0f;
@@ -80,7 +80,7 @@ public class movement : MonoBehaviour
         //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
 
-        if(gameObject.transform.position.y < -4)
+        if(gameObject.transform.position.y < -5)
         {
             PauseMenu.isGameOver = true;
             

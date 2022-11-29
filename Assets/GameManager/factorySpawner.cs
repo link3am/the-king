@@ -39,10 +39,10 @@ public class factorySpawner : MonoBehaviour
             //Instantiate(fab, new Vector3(xPos, 2, zPos), transform.rotation);
             objectPooler.instance.getFromPool("snowpoint", new Vector3(xPos, 2, zPos), Quaternion.identity);
             
-
+            //enemy spawn
             float xx = Random.Range(-20, 20);
             float zz = Random.Range(-20, 20);
-            temp = Instantiate(enemy, new Vector3(xPos, 2, zPos), transform.rotation);
+            temp = Instantiate(enemy, new Vector3(xPos, 10, zPos), transform.rotation);
             temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
             //objectPooler.instance.getFromPool("enemy", new Vector3(xx, 2, zz), Quaternion.identity);
         }
