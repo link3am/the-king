@@ -47,13 +47,13 @@ public class shooting : MonoBehaviour
     {
        
        
-        if (Input.GetButtonDown("Fire1") && ammo > 0)
+        if (Input.GetButtonDown("Fire1") && ammo > 0 && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
         {
             shoot();
             ammo -= 1;
             SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot);
         }
-        if (Input.GetButtonDown("Fire2") && inAmmoPoint == true)
+        if (Input.GetButtonDown("Fire2") && inAmmoPoint == true && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
         {
             ammo++;
         }
@@ -68,8 +68,8 @@ public class shooting : MonoBehaviour
    //}
     void shoot()
     {
-        //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
-        GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
+        GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
+        //GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
 
 
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);

@@ -38,8 +38,7 @@ public class factorySpawner : MonoBehaviour
             zPos = Random.Range(-20, 20);
             //Instantiate(fab, new Vector3(xPos, 2, zPos), transform.rotation);
             objectPooler.instance.getFromPool("snowpoint", new Vector3(xPos, 2, zPos), Quaternion.identity);
-            //Debug.Log(xPos);
-            //Debug.Log(zPos);
+            
 
             float xx = Random.Range(-20, 20);
             float zz = Random.Range(-20, 20);

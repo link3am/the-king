@@ -19,7 +19,7 @@ public class Death :Observer
     public override void OnNotify(GameObject deadman)
     {
         Debug.Log(deadman + "just fall out!!");
-        //teamscore.instance.score4team1(1);
+        teamscore.instance.score4team1(1);
     }
 }
 
