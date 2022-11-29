@@ -13,9 +13,9 @@ public class enemy : MonoBehaviour
     int level = 1;
     public GameObject bullet1;
 
-    Transform playerPos;
     Subject subject;
 
+    GameObject findplayer;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
@@ -37,11 +37,9 @@ public class enemy : MonoBehaviour
 
         //shooting test
         timer = 0f;
-        GameObject findplayer = GameObject.FindGameObjectWithTag("player");
-        playerPos = findplayer.transform;
-        //observer
-        //Death death = new Death(this.gameObject);
-        //subject.AddObserver(death);
+        findplayer = GameObject.FindGameObjectWithTag("player");
+        
+ 
     }
 
     // Update is called once per frame
@@ -60,13 +58,13 @@ public class enemy : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
         //face player
-        gameObject.transform.LookAt(playerPos);
+        gameObject.transform.LookAt(findplayer.transform);
+        gameObject.transform.eulerAngles = new Vector3(0, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
 
-       
         timer += Time.deltaTime;
         if (timer > level)
         {
-            //shoot();
+            shoot();
             timer = 0f;
         }
 
@@ -78,11 +76,9 @@ public class enemy : MonoBehaviour
     }
     void shoot()
     {
-        //GameObject newbullet = Instantiate(bullet1, this.transform.position, Quaternion.identity);
         GameObject newbullet = objectPooler.instance.getFromPool("bullet", this.transform.position, Quaternion.identity);
 
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, aimplayer());
-        //newbullet.GetComponent<Rigidbody>().AddForce(aimplayer() * 20, ForceMode.Impulse);
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.AddForce(aimplayer() * 20, ForceMode.Impulse);
@@ -91,8 +87,8 @@ public class enemy : MonoBehaviour
     Vector3 aimplayer()
     {
         
-        return (playerPos.transform.position - this.transform.position).normalized;
-        //return Vector3.up;
+        return (findplayer.transform.position - this.transform.position).normalized;
+        
     }
     public void setenemy(int lv,Subject subject)
     {
@@ -109,8 +105,6 @@ public class enemy : MonoBehaviour
 
             timer = 0f;
             Destroy(this.gameObject);
-            
-
         }
     }
 }

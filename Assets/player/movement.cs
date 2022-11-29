@@ -80,6 +80,11 @@ public class movement : MonoBehaviour
         //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
 
-     
+        if(gameObject.transform.position.y < -4)
+        {
+            PauseMenu.isGameOver = true;
+            
+
+        }
     }
 }
