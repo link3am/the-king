@@ -56,7 +56,7 @@ public class shooting : MonoBehaviour
         }
         if (Input.GetButtonDown("Fire2") && inAmmoPoint == true && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
         {
-            ammo++;
+            ammo+=3;
         }
 
         //ammoDisplay.text = "ammo: " + ammo.ToString();

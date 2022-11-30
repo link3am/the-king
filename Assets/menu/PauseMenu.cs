@@ -171,7 +171,7 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         if(GameObject.FindGameObjectsWithTag("enemy").Length != 0)
         {
-            showScore.text = "You loss !";
+            showScore.text = "You died!";
         }
         else
             showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
