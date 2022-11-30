@@ -14,7 +14,8 @@ public class factorySpawner : MonoBehaviour
 
     public GameObject fab;
     public GameObject enemy;
-    
+    public bool snowpointSpawn;
+    public bool enemySpawn;
     GameObject temp;
 
     Subject subject = new Subject();
@@ -32,31 +33,27 @@ public class factorySpawner : MonoBehaviour
         timer2 += Time.deltaTime;
         if (timer1 > spawnTime1)
         {
-            //snowpoint spawn
-            timer1 -= spawnTime1;
-            xPos = Random.Range(-20, 20);
-            zPos = Random.Range(-20, 20);
-            //Instantiate(fab, new Vector3(xPos, 2, zPos), transform.rotation);
-            objectPooler.instance.getFromPool("snowpoint", new Vector3(xPos, 2, zPos), Quaternion.identity);
-            
-            //enemy spawn
-            float xx = Random.Range(-20, 20);
-            float zz = Random.Range(-20, 20);
-            temp = Instantiate(enemy, new Vector3(xPos, 10, zPos), transform.rotation);
-            temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
-            //objectPooler.instance.getFromPool("enemy", new Vector3(xx, 2, zz), Quaternion.identity);
+            if (snowpointSpawn)
+            {
+                timer1 -= spawnTime1;
+                xPos = Random.Range(-20, 20);
+                zPos = Random.Range(-20, 20);
+                //Instantiate(fab, new Vector3(xPos, 2, zPos), transform.rotation);
+                objectPooler.instance.getFromPool("snowpoint", new Vector3(xPos, 2, zPos), Quaternion.identity);
+            }
+            if (enemySpawn)
+            {         
+                float xx = Random.Range(-20, 20);
+                float zz = Random.Range(-20, 20);
+                temp = Instantiate(enemy, new Vector3(xPos, 10, zPos), transform.rotation);
+                //temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
+
+
+
+                //objectPooler.instance.getFromPool("enemy", new Vector3(xx, 2, zz), Quaternion.identity);
+            }
         }
-        //if(timer2 > spawnTime2)
-        //{
-        //    //enemt spawn
-        //    timer2 -= spawnTime2;
-        //    //xPos = Random.Range(-20, 20);
-        //    //zPos = Random.Range(-20, 20);
-        //    temp = Instantiate(enemy, new Vector3(xPos, 2, zPos), transform.rotation);
-        //    //objectPooler.instance.getFromPool("enemy", new Vector3(xPos, 2, zPos), Quaternion.identity);
-        //
-        //    //temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
-        //}
+      
 
     
        

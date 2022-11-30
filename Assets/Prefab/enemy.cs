@@ -13,7 +13,7 @@ public class enemy : MonoBehaviour
     int level = 1;
     public GameObject bullet1;
 
-    Subject subject;
+    Subject subject = new Subject();
 
     GameObject findplayer;
     private void OnCollisionEnter(Collision collision)
@@ -38,8 +38,10 @@ public class enemy : MonoBehaviour
         //shooting test
         timer = 0f;
         findplayer = GameObject.FindGameObjectWithTag("player");
-        
- 
+
+        //observer
+        Death death = new Death(this.gameObject);
+        subject.AddObserver(death);
     }
 
     // Update is called once per frame
@@ -90,15 +92,16 @@ public class enemy : MonoBehaviour
         return (findplayer.transform.position - this.transform.position).normalized;
         
     }
-    public void setenemy(int lv,Subject subject)
-    {
-        level = 6-lv;
-        //Debug.Log("level " + lv + " enemy set");
-        this.subject = subject;
-    }
+    //for redom spawn mode
+    //public void setenemy(int lv,Subject subject)
+    //{
+    //    level = 6-lv;
+    //    //Debug.Log("level " + lv + " enemy set");
+    //    this.subject = subject;
+    //}
     void deathcheck()
     {
-        if (transform.position.y < -10)
+        if (transform.position.y < -6)
         {
            //observer call
             subject.Notify(this.gameObject);

@@ -11,6 +11,7 @@ public class shooting : MonoBehaviour
     public float bulletforce = 25;
     public int ammo = 3;
     public Text ammoDisplay;
+    public Text ammoingHint;
     public Text fillammo;
     public bool inAmmoPoint = false;
     //Vector3 diraction;
@@ -21,7 +22,7 @@ public class shooting : MonoBehaviour
         {
             //Debug.Log("in");
             inAmmoPoint = true;
-            fillammo.text = "Hold F key to fill snowball";
+            fillammo.text = "Press F key to fill snowball";
         }
       
 
@@ -58,8 +59,14 @@ public class shooting : MonoBehaviour
             ammo++;
         }
 
-        ammoDisplay.text = "ammo: " + ammo.ToString();
-  
+        //ammoDisplay.text = "ammo: " + ammo.ToString();
+        ammoDisplay.text = ammo.ToString();
+        if (ammo < 4&& !inAmmoPoint)
+            ammoingHint.text = "Stay snowing point to refill snowgun!";
+        else
+            ammoingHint.text = "";
+
+
     }
    //private void LateUpdate()
    //{
@@ -71,6 +78,11 @@ public class shooting : MonoBehaviour
         //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
         GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
 
+        //for(int i=0; i<20; i++)
+        //{
+        //    GameObject garbage = Instantiate(bullet1, new Vector3(0,-5,0), Quaternion.identity);
+        //    garbage.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
+        //}
 
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
         //RaycastHit aimed;

@@ -32,7 +32,7 @@ public class movement : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
-            HealthManager.instance.ChangeHealth(5);
+            HealthManager.instance.ChangeHealth(10);
             hitbackMoving += collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce;
             
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
@@ -80,7 +80,7 @@ public class movement : MonoBehaviour
         //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
 
-        if(gameObject.transform.position.y < -5)
+        if(gameObject.transform.position.y < -6)
         {
             PauseMenu.isGameOver = true;
             

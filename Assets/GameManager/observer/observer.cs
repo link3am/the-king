@@ -20,6 +20,7 @@ public class Death :Observer
     {
         Debug.Log(deadman + "just fall out!!");
         teamscore.instance.score4team1(1);
+        //teamscore.instance.enemydown();
     }
 }
 

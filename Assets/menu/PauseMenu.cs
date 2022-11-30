@@ -156,13 +156,25 @@ public class PauseMenu : MonoBehaviour
 
     void gameover()
     {
-        
-        //pauseMenuUI.SetActive(false);
+
+        //normal
+        //gamingUI.SetActive(false);
+        //overMenuUI.SetActive(true);
+        //Time.timeScale = 0;
+        //Cursor.lockState = CursorLockMode.Confined;
+        //showScore.text = "Your score: " + teamscore.instance.getScore4team1();
+
+        //time trial
         gamingUI.SetActive(false);
         overMenuUI.SetActive(true);
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.Confined;
-        showScore.text = "Your score: " + teamscore.instance.getScore4team1();
+        if(GameObject.FindGameObjectsWithTag("enemy").Length != 0)
+        {
+            showScore.text = "You loss !";
+        }
+        else
+            showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
     }
     public void tryagain()
     {

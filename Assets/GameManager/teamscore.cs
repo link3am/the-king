@@ -11,6 +11,9 @@ public class teamscore : MonoBehaviour
     int team1score;
     int team2score;
     float timer;
+
+    //time trial
+    int enemyLeft;
     
     // Start is called before the first frame update
     void Awake()
@@ -26,23 +29,36 @@ public class teamscore : MonoBehaviour
             "Time: " + timer ;
         timer = 0;
 
-        
+        enemyLeft = GameObject.FindGameObjectsWithTag("enemy").Length;
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
 
-        if (timer >= timelimit)
+        //if (timer >= timelimit)
+        //{
+        //    PauseMenu.isGameOver = true;
+        //}
+        //int timeleft = (int)(timelimit - timer);
+        //scoreboard.text =
+        //    "Team 1: " + team1score + "\r\n" +
+        //    "Team 2: " + team2score + "\r\n" +
+        //    "Time: " + timeleft;
+
+        //time trial mode
+
+        if (enemyLeft < 1)
         {
             PauseMenu.isGameOver = true;
         }
-
-        int timeleft = (int)(timelimit - timer);
         scoreboard.text =
-            "Team 1: " + team1score + "\r\n" +
-            "Team 2: " + team2score + "\r\n" +
-            "Time: " + timeleft;
+            "Find enemy and knock them out !" + "\r\n" +
+            "Enemy left: " + enemyLeft + "\r\n" +           
+            "Time: " + (int)timer;
+
+        //enemy number
+        enemyLeft = GameObject.FindGameObjectsWithTag("enemy").Length;
     }
     public void score4team1(int score)
     {
@@ -64,4 +80,9 @@ public class teamscore : MonoBehaviour
     {
         return team1score;
     }
+    public int getTime4player()
+    {
+        return (int)timer;
+    }
+    
 }
