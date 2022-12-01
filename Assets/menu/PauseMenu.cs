@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using System.Runtime.InteropServices;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.IO;
+
 public class PauseMenu : MonoBehaviour
 {
 
@@ -39,6 +41,8 @@ public class PauseMenu : MonoBehaviour
     public GameObject gamingUI;
     string m_Path; 
     string fn;
+    public GameObject enemyFab;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +70,7 @@ public class PauseMenu : MonoBehaviour
         {
             gameover();
         }
+
     }
 
     public void Resume()
@@ -100,18 +105,14 @@ public class PauseMenu : MonoBehaviour
         fn = m_Path + "/save.txt";
         Debug.Log(fn);
         StartWriting(fn);
-      //  SaveToFile(1, 0, 0, 0);
+        //  SaveToFile(1, x, y, z);
 
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("player"))
         {
             if (obj.name.Contains("player"))
             {
                 SaveToFile(1,obj.transform.position.x, obj.transform.position.y, obj.transform.position.z);
-            }
-
-            if (obj.name.Contains("enemy"))
-            {
-                SaveToFile(2, obj.transform.position.x, obj.transform.position.y, obj.transform.position.z);
+                // 1, x, y, z 
             }
 
         }
@@ -122,12 +123,11 @@ public class PauseMenu : MonoBehaviour
             if (obj.name.Contains("enemy"))
             {
                 SaveToFile(2, obj.transform.position.x, obj.transform.position.y, obj.transform.position.z);
+                          //2 , x , y, z
             }
 
         }
-
         //need to format how it saves
-
 
         Debug.Log("saved");
 
@@ -140,12 +140,44 @@ public class PauseMenu : MonoBehaviour
         Debug.Log("Loading");
         m_Path = Application.dataPath;
         fn = m_Path + "/save.txt";
-        Debug.Log(fn);
-        Debug.Log("Loaded");
 
+        string line = "";
+
+        foreach (GameObject obj2 in GameObject.FindGameObjectsWithTag("enemy"))
+        {
+            Destroy(obj2);
+
+        }
+        GameObject findplayer = GameObject.FindGameObjectWithTag("player");
+        using (StreamReader file = new StreamReader(fn)) //open file
+        {
+            while ((line = file.ReadLine()) != null) //read text file, line by line until it is empty
+            {
+                char[] delimiters = new char[] { ',', '\n' }; //delimieters to check and remve when sorting out cordinates
+                string[] lines = line.Split(delimiters); //split lines in text file given delimiters
+
+                //load in player
+               
+                    if (lines[0] == "1") // 1 = player
+                    {
+                        findplayer.GetComponent<CharacterController>().enabled = false;
+                        findplayer.transform.position = new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3]));
+                        findplayer.GetComponent<CharacterController>().enabled = true;
+                    }
+                
+                
+                if (lines[0] == "2") //2 = enemy
+                {
+                    enemyFab = Instantiate(enemyFab, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
+                                       
+                }
+ 
+            }
+            file.Close();
+        }
     }
 
-
+    //Quit 
     public void Quit()
     {       
         Time.timeScale = 1;
@@ -154,6 +186,7 @@ public class PauseMenu : MonoBehaviour
 
     //gameover
 
+    //Game Over
     void gameover()
     {
 
@@ -176,6 +209,8 @@ public class PauseMenu : MonoBehaviour
         else
             showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
     }
+
+    //Try Again
     public void tryagain()
     {
         
