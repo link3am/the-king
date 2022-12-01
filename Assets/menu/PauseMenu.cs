@@ -41,15 +41,8 @@ public class PauseMenu : MonoBehaviour
     public GameObject gamingUI;
     string m_Path; 
     string fn;
-    GameObject temp;
-    GameObject temp2;
-    public GameObject obj;
-    //float x, y, z;
-
-    public void MoveGameObject(float x, float y, float z)
-    {
-        obj.transform.position = new Vector3(x, y, z);
-    }
+    public GameObject enemyFab;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -149,6 +142,12 @@ public class PauseMenu : MonoBehaviour
 
         string line = "";
 
+        foreach (GameObject obj2 in GameObject.FindGameObjectsWithTag("enemy"))
+        {
+            Destroy(obj2);
+
+        }
+        GameObject findplayer = GameObject.FindGameObjectWithTag("player");
         using (StreamReader file = new StreamReader(fn)) //open file
         {
             while ((line = file.ReadLine()) != null) //read text file, line by line until it is empty
@@ -157,60 +156,21 @@ public class PauseMenu : MonoBehaviour
                 string[] lines = line.Split(delimiters); //split lines in text file given delimiters
 
                 //load in player
-                foreach (GameObject obj in GameObject.FindGameObjectsWithTag("player"))
-                {
+               
                     if (lines[0] == "1") // 1 = player
                     {
-                        //creates new player obj with saved coordinates
-                        temp = Instantiate(obj, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
-                        //deletes old object
-                        Destroy(obj);
+                        findplayer.GetComponent<CharacterController>().enabled = false;
+                        findplayer.transform.position = new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3]));
+                        findplayer.GetComponent<CharacterController>().enabled = true;
                     }
-                }
-
-                //load in enemies
-                foreach (GameObject obj2 in GameObject.FindGameObjectsWithTag("enemy"))
-                {
-                    if (lines[0] == "2") //2 = enemy
-                    {
-                        temp2 = Instantiate(obj2, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
-                        temp2.GetComponent<enemy>().enabled = true;
-                        break;
-                    }
-                    //deletes old object
-                    Destroy(obj2);
-                }
                 
-
-                /* old version. enemy doesnt work
-                if (lines[0] == "1") // 1 = player
+                
+                if (lines[0] == "2") //2 = enemy
                 {
-                    //load in player
-                    foreach (GameObject obj in GameObject.FindGameObjectsWithTag("player"))
-                    {
-                        // Debug.Log("player");
-                        //creates new player obj with saved coordinates
-                        temp = Instantiate(obj, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
-                        //deletes old object
-                        Destroy(obj);
-                    }
+                    enemyFab = Instantiate(enemyFab, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
+                                       
                 }
-                else if (lines[0] == "2") //2 = enemy
-                {
-                    //load in enemies
-                    Debug.Log("enemyCount");
-
-                    foreach (GameObject obj2 in GameObject.FindGameObjectsWithTag("enemy"))
-                    {
-                        Debug.Log("enemy");
-
-                        Destroy(obj2);
-
-                        temp2 = Instantiate(obj2, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
-                        temp2.GetComponent<enemy>().enabled = true;
-                    }
-                }
-                */
+ 
             }
             file.Close();
         }
