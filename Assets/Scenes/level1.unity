@@ -4089,6 +4089,7 @@ MonoBehaviour:
   overMenuUI: {fileID: 1081708259}
   showScore: {fileID: 1164212386}
   gamingUI: {fileID: 1353327883}
+  enemyFab: {fileID: 187527662374715546, guid: cd37af0f509474d40a01a33831e0b25c, type: 3}
 --- !u!1 &1607422377
 GameObject:
   m_ObjectHideFlags: 0
