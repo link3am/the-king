@@ -20,7 +20,7 @@ TagManager:
   - enemy
   - 
   - deathzone
-  - 
+  - particle
   - 
   - 
   - 
@@ -42,4 +42,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 4169058611
+    locked: 0
+  - name: menu
+    uniqueID: 1945537153
     locked: 0
