@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class look : MonoBehaviour
 {
-    public float mouseSpeeding = 100f;
+    public float mouseSpeeding = 10f;
     public Transform player;
     float xRo = 0f;
     // Start is called before the first frame update

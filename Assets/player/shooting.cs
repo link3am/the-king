@@ -4,18 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 public class shooting : MonoBehaviour
 {
-
+    
+    public Animator shovelAnimator;
+    public Animator gunAnimator;
     public Camera playerCam;
     public GameObject gunPoint;
     public GameObject bullet1;
-    public float bulletforce = 25;
+    public GameObject weapon1;
+    public GameObject weapon2;    
+    public float bulletforce = 35;
     public int ammo = 3;
     public Text ammoDisplay;
     public Text ammoingHint;
     public Text fillammo;
     public bool inAmmoPoint = false;
-    //Vector3 diraction;
+    float nextfire = 0;
+    float fireRate = 1;
+
     
+    
+    int currentWeapon;
+    public static bool rooted;
+    float digging = 0;
+    //Vector3 diraction;
+
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
@@ -24,9 +36,17 @@ public class shooting : MonoBehaviour
             inAmmoPoint = true;
             fillammo.text = "Press F key to fill snowball";
         }
-      
 
-     }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("itemammo"))
+        {
+            ammo += 3;
+        }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("itempow"))
+        {
+            StartCoroutine(rofUP());
+        }
+
+    }
     private void OnTriggerExit(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("storm"))
@@ -40,39 +60,73 @@ public class shooting : MonoBehaviour
  
     void Start()
     {
+        currentWeapon = 2;
+        
+        shovelAnimator.SetBool("isDigging", false);
         
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-       
-        if (Input.GetButtonDown("Fire1") && ammo > 0 && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
+
+        if (currentWeapon == 1)
         {
-            shoot();
-            ammo -= 1;
-            SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot);
+            if (Input.GetButtonDown("Fire1") && ammo > 0 && !PauseMenu.isGamePaused && !PauseMenu.isGameOver && Time.time >= nextfire)
+            {
+                nextfire = Time.time + fireRate;
+                shoot();
+                ammo -= 1;
+                SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot);
+                gunAnimator.SetTrigger("shot");
+            }
+            if (Input.GetButtonDown("Fire2") && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
+            {
+                ammo += 3;
+            }
         }
-        if (Input.GetButtonDown("Fire2") && inAmmoPoint == true && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
+        if (currentWeapon == 1)
         {
-            ammo+=3;
+            weapon1.SetActive(true);
+            weapon2.SetActive(false);
+        }
+        if (currentWeapon == 2)
+        {
+            weapon1.SetActive(false);
+            weapon2.SetActive(true);
         }
 
-        //ammoDisplay.text = "ammo: " + ammo.ToString();
+        if (Input.GetKeyDown(KeyCode.Alpha1)&&digging==0)
+            currentWeapon = 1;
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            currentWeapon = 2;
+        if (Input.GetButtonDown("Fire1") && movement.isground == true&&currentWeapon ==2)
+        {
+            rooted = true;
+            shovelAnimator.SetBool("isDigging", true);
+            
+        }
+        if(rooted == true)
+        {
+            digging += Time.deltaTime;
+            if(digging>1.375f)
+            {
+                digging = 0;
+                shovelAnimator.SetBool("isDigging", false);
+                rooted = false;
+                ammo += 3;
+            }
+        }    
+       
         ammoDisplay.text = ammo.ToString();
         if (ammo < 4&& !inAmmoPoint)
-            ammoingHint.text = "Stay snowing point to refill snowgun!";
+            ammoingHint.text = "Use shovel to refill snowgun!";
         else
             ammoingHint.text = "";
 
 
     }
-   //private void LateUpdate()
-   //{
-   //    inAmmoPoint = false;
-   //    fillammo.text = "";
-   //}
+   
     void shoot()
     {
         //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
@@ -101,7 +155,15 @@ public class shooting : MonoBehaviour
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
-
+        
 
     }
+    IEnumerator rofUP()
+    {
+        fireRate = 0.1f;
+        yield return new WaitForSeconds(5);
+        fireRate = 1.0f;
+    }
+
+   
 }

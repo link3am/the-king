@@ -34,28 +34,30 @@ public class teamscore : MonoBehaviour
 
     private void Update()
     {
-        timer += Time.deltaTime;
+        //timer += Time.deltaTime;
 
         //if (timer >= timelimit)
         //{
         //    PauseMenu.isGameOver = true;
         //}
-        //int timeleft = (int)(timelimit - timer);
-        //scoreboard.text =
-        //    "Team 1: " + team1score + "\r\n" +
-        //    "Team 2: " + team2score + "\r\n" +
-        //    "Time: " + timeleft;
+        int timeleft = (int)(timelimit - timer);
+        scoreboard.text =
+            "Team 1: " + team1score + "\r\n" +
+            "Team 2: " + team2score + "\r\n" +
+            "Time: " + timeleft;
 
         //time trial mode
 
-        if (enemyLeft < 1)
-        {
-            PauseMenu.isGameOver = true;
-        }
-        scoreboard.text =
-            "Find enemy and knock them out !" + "\r\n" +
-            "Enemy left: " + enemyLeft + "\r\n" +           
-            "Time: " + (int)timer;
+        //if (enemyLeft < 1)
+        //{
+        //    PauseMenu.isGameOver = true;
+        //}
+
+
+        //scoreboard.text =
+        //    "Find enemy and knock them out !" + "\r\n" +
+        //    "Enemy left: " + enemyLeft + "\r\n" +           
+        //    "Time: " + (int)timer;
 
         //enemy number
         enemyLeft = GameObject.FindGameObjectsWithTag("enemy").Length;

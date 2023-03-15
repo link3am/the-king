@@ -16,6 +16,10 @@ public class enemy : MonoBehaviour
     Subject subject = new Subject();
 
     GameObject findplayer;
+    //for moving
+    float movingTimer;
+    float movingVar;
+    int moveleft = 1;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
@@ -42,6 +46,8 @@ public class enemy : MonoBehaviour
         //observer
         Death death = new Death(this.gameObject);
         subject.AddObserver(death);
+
+        movingVar = Random.value;
     }
 
     // Update is called once per frame
@@ -62,6 +68,8 @@ public class enemy : MonoBehaviour
         //face player
         gameObject.transform.LookAt(findplayer.transform);
         gameObject.transform.eulerAngles = new Vector3(0, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
+        //moveing
+        //enemyMoveing();
 
         timer += Time.deltaTime;
         if (timer > level)
@@ -109,5 +117,26 @@ public class enemy : MonoBehaviour
             timer = 0f;
             Destroy(this.gameObject);
         }
+    }
+
+    void enemyMoveing()
+    {
+        movingTimer += Time.deltaTime;
+        if(movingTimer >=movingVar)
+        {
+            movingTimer = 0;
+            movingVar = Random.value*0.8f;
+
+            
+            if (Random.value >= 0.5)
+            {
+                moveleft = 1;
+            }
+            else
+                moveleft = -1;
+        }
+        
+
+        controller.Move(Vector3.left * moveleft *3 * Time.deltaTime);
     }
 }

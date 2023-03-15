@@ -8,15 +8,19 @@ public class snowball : MonoBehaviour
     Vector3 dir;
     Rigidbody rb;
     GameObject shooter;
+    public GameObject particle;
     private void OnCollisionEnter(Collision collision)
     {
-        //Destroy(this.gameObject);
-        bulletOut();
-    }
+        gameObject.SetActive(false);
+        Physics.IgnoreCollision(this.GetComponent<Collider>(), shooter.GetComponent<Collider>(), false);
 
+        GameObject temp = Instantiate(particle, gameObject.transform.position, Quaternion.identity);
+        temp.GetComponent<ParticleSystem>().Play();
+    }
 
     void Start()
     {
+
     }
    void Update()
     {
