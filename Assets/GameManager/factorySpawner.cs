@@ -31,7 +31,7 @@ public class factorySpawner : MonoBehaviour
     {
         timer1 += Time.deltaTime;
         timer2 += Time.deltaTime;
-        if (timer1 > spawnTime1)
+        if (timer2 > spawnTime2)
         {
             if (snowpointSpawn)
             {
@@ -42,10 +42,11 @@ public class factorySpawner : MonoBehaviour
                 objectPooler.instance.getFromPool("snowpoint", new Vector3(xPos, 2, zPos), Quaternion.identity);
             }
             if (enemySpawn)
-            {         
+            {
+                timer2 -= spawnTime2;
                 float xx = Random.Range(-20, 20);
                 float zz = Random.Range(-20, 20);
-                temp = Instantiate(enemy, new Vector3(xPos, 10, zPos), transform.rotation);
+                temp = Instantiate(enemy, new Vector3(xx, 10, zz), transform.rotation);
                 //temp.GetComponent<enemy>().setenemy(Random.Range(1, 5), subject);
 
 

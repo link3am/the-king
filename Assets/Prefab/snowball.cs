@@ -14,13 +14,15 @@ public class snowball : MonoBehaviour
         gameObject.SetActive(false);
         Physics.IgnoreCollision(this.GetComponent<Collider>(), shooter.GetComponent<Collider>(), false);
 
+        
         GameObject temp = Instantiate(particle, gameObject.transform.position, Quaternion.identity);
         temp.GetComponent<ParticleSystem>().Play();
+        //Destroy(this.gameObject);
     }
 
     void Start()
     {
-
+        shooter = GameObject.FindWithTag("enemy");
     }
    void Update()
     {
@@ -37,6 +39,11 @@ public class snowball : MonoBehaviour
     {
         shooter = aa;
         Physics.IgnoreCollision(this.GetComponent<Collider>(), aa.GetComponent<Collider>());
+        dir = bb.normalized;
+    }
+    public void setshooter( Vector3 bb)
+    {
+        Physics.IgnoreCollision(this.GetComponent<Collider>(), shooter.GetComponent<Collider>());
         dir = bb.normalized;
     }
     public Vector3 getdir()

@@ -27,6 +27,8 @@ public class movement : MonoBehaviour
     public float hitbackforce = 20f;
     Vector3 hitbackMoving;
 
+    //
+    public GameObject enemy;
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("itemspd"))
@@ -43,9 +45,10 @@ public class movement : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
             HealthManager.instance.ChangeHealth(10);
-            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce)/HealthManager.instance.getHP();
+            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce);
             
-            //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * snowballforce;
+            //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
+            //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
             hitbackMoving.y = 0f;
             
         }

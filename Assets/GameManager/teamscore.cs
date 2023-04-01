@@ -34,7 +34,7 @@ public class teamscore : MonoBehaviour
 
     private void Update()
     {
-        //timer += Time.deltaTime;
+        timer += Time.deltaTime;
 
         //if (timer >= timelimit)
         //{

@@ -18,6 +18,7 @@ public class shooting : MonoBehaviour
     public Text ammoingHint;
     public Text fillammo;
     public bool inAmmoPoint = false;
+    AudioSource shootSound;
     float nextfire = 0;
     float fireRate = 1;
 
@@ -63,7 +64,8 @@ public class shooting : MonoBehaviour
         currentWeapon = 2;
         
         shovelAnimator.SetBool("isDigging", false);
-        
+
+        shootSound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -77,7 +79,7 @@ public class shooting : MonoBehaviour
                 nextfire = Time.time + fireRate;
                 shoot();
                 ammo -= 1;
-                SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot);
+                //SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot); //
                 gunAnimator.SetTrigger("shot");
             }
             if (Input.GetButtonDown("Fire2") && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
@@ -155,8 +157,10 @@ public class shooting : MonoBehaviour
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
-        
 
+        shootSound.Play();
+
+        MPhoster.sendbullet(playerCam.transform.forward, gunPoint.transform.position);
     }
     IEnumerator rofUP()
     {
