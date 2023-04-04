@@ -9,6 +9,15 @@ EditorBuildSettings:
     path: Assets/Scenes/menu.unity
     guid: 9bead41663ce282419e600185941146b
   - enabled: 1
+    path: Assets/Scenes/failconnect.unity
+    guid: 1d9c0fb6bd31ae642a196a1b31df8fa0
+  - enabled: 1
+    path: Assets/Scenes/enemyquit.unity
+    guid: 5d5406789c16cde4591858ea3c9e03d1
+  - enabled: 1
     path: Assets/Scenes/level1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/de1client.unity
+    guid: 45a61de9e904fcc43ac6c68230a59c42
   m_configObjects: {}

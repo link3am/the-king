@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using System;
 using System.Linq;
@@ -25,19 +26,23 @@ public class MPhoster : MonoBehaviour
     private static Vector3 facing;
     public GameObject enemy;
     //bullet
-    public static Vector3 bulletforce;
+    static Vector3 bulletdir;
+    static Vector3 gunpos;
+    static bool trigger;
     private static byte[] bbuffer = new byte[512];
-
     //send local player
     public GameObject splayer;
     private static float[] sposA;
     private static float[] sfacingA;
-    private static byte[] sendbuffer = new byte[512]; 
+    private static byte[] sendbuffer = new byte[512];
+
+    //ready game
+    public static bool readyPlayer = false;
     void Start()
     {
         server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-       // string ipadress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString();//reference https://stackoverflow.com/questions/8709427/get-local-system-ip-address-using-c-sharp
-        IPAddress ip = IPAddress.Parse("10.0.0.126");
+        string ipadress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString();//reference https://stackoverflow.com/questions/8709427/get-local-system-ip-address-using-c-sharp
+        IPAddress ip = IPAddress.Parse(ipadress);
         server.Bind(new IPEndPoint(ip, 8888));//a
         server.Listen(10);
         Debug.Log("start server");
@@ -61,9 +66,10 @@ public class MPhoster : MonoBehaviour
         sendbuffer = new byte[25];
         Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
         Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
-
-
-
+        if(trigger ==true)
+        {
+            enemyshoot();
+        }
     }
 
     private static void AcceptCallback(IAsyncResult result)
@@ -72,8 +78,9 @@ public class MPhoster : MonoBehaviour
         IPEndPoint clientEP = (IPEndPoint)client.RemoteEndPoint;
         string ip = clientEP.Address.ToString();
         Debug.Log("client connected!!!   IP: " + ip);
-
-   
+        readyPlayer = true;
+        byte[] temp = new byte[3];
+        client.Send(temp);
         client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client);
     }
 
@@ -90,12 +97,16 @@ public class MPhoster : MonoBehaviour
             Buffer.BlockCopy(recvbuffer, 12, facingA, 0, 12);
             facing = new Vector3(facingA[0], facingA[1], facingA[2]);
         }
-        else//its bullet
+        if (rec == 24)
         {
-            //int bulletnum = rec / 12;
-            //Debug.Log("bullet: " + bulletnum);
-            //temp1 = new float[3];
-            //Buffer.BlockCopy(recvbuffer, 0, temp1, 0, 12);
+
+            float[] temp = new float[3];
+            float[] temp2 = new float[3];
+            Buffer.BlockCopy(recvbuffer, 0, temp, 0, 12);
+            Buffer.BlockCopy(recvbuffer, 12, temp2, 0, 12);
+            bulletdir = new Vector3(temp[0], temp[1], temp[2]);
+            gunpos = new Vector3(temp2[0], temp2[1], temp2[2]);
+            trigger = true;
         }
 
         //send 
@@ -108,7 +119,7 @@ public class MPhoster : MonoBehaviour
         socket.EndSend(result);
     }
 
-    public static void sendbullet(Vector3 dir,Vector3 gun)
+    public static void sendbullet1(Vector3 dir,Vector3 gun)
     {
         bbuffer = new byte[24];
         float[] temp = { dir.x, dir.y, dir.z };
@@ -119,5 +130,20 @@ public class MPhoster : MonoBehaviour
             client1.BeginSend(bbuffer, 0, bbuffer.Length, 0, new AsyncCallback(SendCallback), client1);
         else
             Debug.Log("no target");
+    }
+    void enemyshoot()
+    {
+        //GameObject newbullet = GameObject.Instantiate(cube1, gunpos, Quaternion.identity);
+        GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunpos, Quaternion.identity);
+        newbullet.GetComponent<snowball>().setshooter(enemy, bulletdir);
+        Rigidbody rb = newbullet.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.AddForce(bulletdir * 25, ForceMode.Impulse);
+        trigger = false;
+    }
+    public static void serverclose()
+    {
+        server.Close();
+        Debug.Log("server close");
     }
 }

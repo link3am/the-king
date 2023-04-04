@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using System;
 using System.Linq;
@@ -15,14 +16,17 @@ public class MPclient : MonoBehaviour
 {
 
     private static Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    static EndPoint serverEP = new IPEndPoint(IPAddress.Parse("10.0.0.126"), 8888);
+    //static EndPoint serverEP = new IPEndPoint(IPAddress.Parse("10.0.0.126"), 8888);
     public GameObject player;
-
+    GameObject temp;
     private static byte[] sendbuffer = new byte[512];
     private static float[] sposA;
     private static float[] sfacingA;
 
-
+    //connection check
+    static bool connected = false;
+    float timer = 0.0f;
+    float timeout = 3.0f;
     //recv
     public GameObject enemy;
     private static byte[] recvbuffer = new byte[512];
@@ -31,15 +35,20 @@ public class MPclient : MonoBehaviour
     private static float[] facingA;
     private static Vector3 facing;
     //bullet
-    public GameObject cube1;
     static bool trigger;
-
     static Vector3 bulletdir;
     static Vector3 gunpos;
+    private static byte[] bbuffer = new byte[512];
+
     void Start()
     {
+        temp = GameObject.FindGameObjectWithTag("IP");
+        //if (temp == null)
+        //    SceneManager.LoadScene(0);
+        string getip = temp.GetComponent<IPenter>().getString();
+        //client.Connect(IPAddress.Parse(getip), 8888);
+        client.BeginConnect(IPAddress.Parse(getip), 8888, new AsyncCallback(ConnectCallBack), null);
 
-        client.Connect(IPAddress.Parse("10.0.0.126"), 8888);
         trigger = false;
     }
 
@@ -50,23 +59,32 @@ public class MPclient : MonoBehaviour
         //bpos = new byte[pos.Length * 4];
         //Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
         //client.Send(bpos);
-
-        //send player data
-        sposA = new float[] { player.transform.position.x, player.transform.position.y, player.transform.position.z };
-        sfacingA = new float[] { player.transform.eulerAngles.x, player.transform.eulerAngles.y, player.transform.eulerAngles.z };
-        sendbuffer = new byte[25];
-        Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
-        Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
-        client.Send(sendbuffer);
-
-        //recv part
-        client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client);
-        enemy.transform.position = pos;
-        enemy.transform.rotation = Quaternion.Euler(facing);
-        //bullet
-        if (trigger == true)
+        if (connected)
         {
-            enemyshoot();
+            //send player data
+            sposA = new float[] { player.transform.position.x, player.transform.position.y, player.transform.position.z };
+            sfacingA = new float[] { player.transform.eulerAngles.x, player.transform.eulerAngles.y, player.transform.eulerAngles.z };
+            sendbuffer = new byte[25];
+            Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
+            Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
+            client.Send(sendbuffer);
+            //recv part
+            client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client);
+            enemy.transform.position = pos;
+            enemy.transform.rotation = Quaternion.Euler(facing);
+            //bullet
+            if (trigger == true)
+            {
+                enemyshoot();
+            }
+        }
+        else
+            timer += Time.deltaTime;
+        if (timer >= timeout)
+        {
+            Destroy(temp);
+            Cursor.lockState = CursorLockMode.Confined;
+            SceneManager.LoadScene(1); 
         }
     }
     private static void ReceiveCallback(IAsyncResult result)
@@ -74,7 +92,7 @@ public class MPclient : MonoBehaviour
         Socket socket = (Socket)result.AsyncState;
         int rec = socket.EndReceive(result); //12 for a vector3
         //Debug.Log("recved int: " + rec);
-
+        
         if (rec == 25)
         {
             posA = new float[3];        //player recv
@@ -86,15 +104,12 @@ public class MPclient : MonoBehaviour
         }
         if (rec == 24)
         {
-            Debug.Log("bullet recved ");
             float[] temp = new float[3];
             float[] temp2 = new float[3];
             Buffer.BlockCopy(recvbuffer, 0, temp, 0, 12);
             Buffer.BlockCopy(recvbuffer, 12, temp2, 0, 12);
             bulletdir = new Vector3(temp[0], temp[1], temp[2]);
             gunpos = new Vector3(temp2[0], temp2[1], temp2[2]);
-
-            Debug.Log(bulletdir + "  " + gunpos);
             trigger = true;
         }
 
@@ -103,12 +118,44 @@ public class MPclient : MonoBehaviour
 
     void enemyshoot()
     {
-        Debug.Log("running");
-        GameObject newbullet = GameObject.Instantiate(cube1, gunpos, Quaternion.identity);
+        //GameObject newbullet = GameObject.Instantiate(cube1, gunpos, Quaternion.identity);
+        GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunpos, Quaternion.identity);
         newbullet.GetComponent<snowball>().setshooter(enemy, bulletdir);
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.AddForce(bulletdir * 25, ForceMode.Impulse);
         trigger = false;
+    }
+
+    private static void SendCallback(IAsyncResult result)
+    {
+        Socket socket = (Socket)result.AsyncState;
+        socket.EndSend(result);
+    }
+    public static void sendbullet2(Vector3 dir, Vector3 gun)
+    {
+        bbuffer = new byte[24];
+        float[] temp = { dir.x, dir.y, dir.z };
+        float[] temp2 = { gun.x, gun.y, gun.z };
+        Buffer.BlockCopy(temp, 0, bbuffer, 0, 12);
+        Buffer.BlockCopy(temp2, 0, bbuffer, 12, 12);
+       
+        client.BeginSend(bbuffer, 0, bbuffer.Length, 0, new AsyncCallback(SendCallback), client);
+       
+    }
+
+    private static void ConnectCallBack(IAsyncResult result)
+    {
+        client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(CheckCallBack), client);
+    }
+    private static void CheckCallBack(IAsyncResult result)
+    {
+    Socket socket = (Socket)result.AsyncState;
+    int rec = socket.EndReceive(result); //12 for a vector3
+        //Debug.Log("recved int: " + rec);
+        if(rec ==3)
+        {
+            connected = true;
+        }
     }
 }

@@ -23,6 +23,12 @@ public class snowball : MonoBehaviour
     void Start()
     {
         shooter = GameObject.FindWithTag("enemy");
+        //GameObject[] snowballs = GameObject.FindGameObjectsWithTag("snowball1");
+        //foreach (GameObject aa in snowballs)
+        //{
+        //    Physics.IgnoreCollision(this.GetComponent<Collider>(), aa.GetComponent<Collider>());
+        //}
+
     }
    void Update()
     {

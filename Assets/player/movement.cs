@@ -22,7 +22,7 @@ public class movement : MonoBehaviour
     
     public static bool isground;
     Vector3 velocity;
-    bool jump = false;
+
 
     public float hitbackforce = 20f;
     Vector3 hitbackMoving;
@@ -37,16 +37,14 @@ public class movement : MonoBehaviour
             speed = upSpeed;
         }
     }
-       
-    
+         
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
             HealthManager.instance.ChangeHealth(10);
-            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce);
-            
+            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce);           
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
             hitbackMoving.y = 0f;
@@ -65,8 +63,7 @@ public class movement : MonoBehaviour
         float forward = Input.GetAxis("Vertical");
         float right = Input.GetAxis("Horizontal");
         Vector3 move = transform.forward * forward + transform.right * right;
-        
-        if(shooting.rooted == false)
+        if(shooting.rooted == false&& playercontrol())
             controller.Move(move * speed * Time.deltaTime);
 
         //is ground check
@@ -76,8 +73,7 @@ public class movement : MonoBehaviour
         velocity.y += downforce*Time.deltaTime;
 
         //jump
-        jump = Input.GetButtonDown("Jump");
-        if (jump == true && isground == true )
+        if (Input.GetButtonDown("Jump") == true && isground == true &&playercontrol())
         {
             velocity.y += jumpforce;
         }
@@ -107,35 +103,15 @@ public class movement : MonoBehaviour
 
         if(gameObject.transform.position.y < -6)
         {
-            PauseMenu.isGameOver = true;
+            //PauseMenu.isGameOver = true;
         }
 
-        
+    }
 
-        //testing tp
-        //if (Input.GetKeyDown(KeyCode.Alpha1))
-        //{
-        //    controller.enabled = false;
-        //    gameObject.transform.position = new Vector3(0, 1.5f, -27.2999992f);
-        //    controller.enabled = true;
-        //}
-        //if (Input.GetKeyDown(KeyCode.Alpha2))
-        //{
-        //    controller.enabled = false;
-        //    gameObject.transform.position = new Vector3(0, 1.5f, 2.0999999f);
-        //    controller.enabled = true;
-        //}
-        //if (Input.GetKeyDown(KeyCode.Alpha3))
-        //{
-        //    controller.enabled = false;
-        //    gameObject.transform.position = new Vector3(-46f, -1.89999998f, 9.39999962f);
-        //    controller.enabled = true;
-        //}
-        //if (Input.GetKeyDown(KeyCode.Alpha4))
-        //{
-        //    controller.enabled = false;
-        //    gameObject.transform.position = new Vector3(-53.7000008f, 1.5f, -1.10000002f);
-        //    controller.enabled = true;
-        //}
+    bool playercontrol()
+    {
+        if (!PauseMenu.ingaming || PauseMenu.inpause)
+            return false;
+        return true;
     }
 }

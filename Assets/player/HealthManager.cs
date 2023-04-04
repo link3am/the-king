@@ -23,10 +23,7 @@ public class HealthManager : MonoBehaviour
 
     private void Update()
     {
-        if (health == 0)
-        {
-            PauseMenu.isGameOver = true;
-        }
+
     }
 
     public void ChangeHealth(int healthValue)

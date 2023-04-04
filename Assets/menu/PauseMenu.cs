@@ -33,12 +33,16 @@ public class PauseMenu : MonoBehaviour
     private static extern void EndWriting();
 
 
-    public static bool isGamePaused;
-    public static bool isGameOver;
+    public static bool inpause;
+    public static bool ingaming;
     public GameObject pauseMenuUI;
     public GameObject overMenuUI;
     public TextMeshProUGUI showScore;
     public GameObject gamingUI;
+    public GameObject waitingUI;
+    public static bool waiting;
+    public GameObject manager;
+
     string m_Path; 
     string fn;
     public GameObject enemyFab;
@@ -47,52 +51,57 @@ public class PauseMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        isGameOver = false;
-        isGamePaused = false;
-        Time.timeScale = 1;
+        pauseMenuUI.SetActive(false);
+        ingaming = false;
+        inpause = false;
+        
+        waiting = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)&& !isGameOver)
+        if (Input.GetKeyDown(KeyCode.F1)&& ingaming)
         {
-            if (isGamePaused)
-            {
+            if (inpause)
                 Resume();
-            }
             else
-            {
                 Pause();
-            }
         }
-        if(isGameOver)
+        if (ingaming && !inpause)
         {
-            gameover();
+            gamingUI.SetActive(true);
+            Cursor.lockState = CursorLockMode.Locked;
         }
-
+        else
+        {
+            gamingUI.SetActive(false);
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        if (waiting)
+            waitingUI.SetActive(true);
+        else
+            waitingUI.SetActive(false);
     }
 
     public void Resume()
     {
-        isGamePaused = false;       
+        inpause = false;       
         pauseMenuUI.SetActive(false);
         gamingUI.SetActive(true);
-        Time.timeScale = 1;
         Debug.Log("Resuming");
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
 
     }
 
     void Pause()
     {
-        isGamePaused = true;       
+        inpause = true;       
         // Cursor.lockState = CursorLockMode.None;
         pauseMenuUI.SetActive(true);
         gamingUI.SetActive(false);
-        Time.timeScale = 0;
         Debug.Log("Pausing");
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
     }
 
     
@@ -164,29 +173,27 @@ public class PauseMenu : MonoBehaviour
                         findplayer.transform.position = new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3]));
                         findplayer.GetComponent<CharacterController>().enabled = true;
                     }
-                
-                
+                              
                 if (lines[0] == "2") //2 = enemy
                 {
                     enemyFab = Instantiate(enemyFab, new Vector3(float.Parse(lines[1]), float.Parse(lines[2]), float.Parse(lines[3])), transform.rotation);
                                        
-                }
- 
+                } 
             }
             file.Close();
         }
     }
 
-    //Quit 
+    public void Serverquit()
+    {
+        MPhoster.serverclose();
+        SceneManager.LoadScene(0);
+    }
     public void Quit()
-    {       
-        Time.timeScale = 1;
+    {
         SceneManager.LoadScene(0);
     }
 
-    //gameover
-
-    //Game Over
     void gameover()
     {
 
@@ -196,11 +203,9 @@ public class PauseMenu : MonoBehaviour
         //Time.timeScale = 0;
         //Cursor.lockState = CursorLockMode.Confined;
         //showScore.text = "Your score: " + teamscore.instance.getScore4team1();
-
         //time trial
         gamingUI.SetActive(false);
         overMenuUI.SetActive(true);
-        Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.Confined;
         if(GameObject.FindGameObjectsWithTag("enemy").Length != 0)
         {
@@ -209,8 +214,6 @@ public class PauseMenu : MonoBehaviour
         else
             showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
     }
-
-    //Try Again
     public void tryagain()
     {
         

@@ -18,6 +18,7 @@ public class shooting : MonoBehaviour
     public Text ammoingHint;
     public Text fillammo;
     public bool inAmmoPoint = false;
+    public GameObject manager;
     AudioSource shootSound;
     float nextfire = 0;
     float fireRate = 1;
@@ -71,42 +72,38 @@ public class shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (currentWeapon == 1)
+        if (!PauseMenu.inpause && PauseMenu.ingaming)
         {
-            if (Input.GetButtonDown("Fire1") && ammo > 0 && !PauseMenu.isGamePaused && !PauseMenu.isGameOver && Time.time >= nextfire)
+            if (currentWeapon == 1)
             {
-                nextfire = Time.time + fireRate;
-                shoot();
-                ammo -= 1;
-                //SoundManager.PlaySound(SoundManager.SoundFX.PlayerShoot); //
-                gunAnimator.SetTrigger("shot");
+                if (Input.GetButtonDown("Fire1") && ammo > 0 && Time.time >= nextfire)
+                {
+                    nextfire = Time.time + fireRate;
+                    shoot();
+                    ammo -= 1;
+                    gunAnimator.SetTrigger("shot");
+                }
+                if (Input.GetButtonDown("Fire2"))
+                    ammo += 3;
+                weapon1.SetActive(true);
+                weapon2.SetActive(false);
             }
-            if (Input.GetButtonDown("Fire2") && !PauseMenu.isGamePaused && !PauseMenu.isGameOver)
-            {
-                ammo += 3;
-            }
-        }
-        if (currentWeapon == 1)
-        {
-            weapon1.SetActive(true);
-            weapon2.SetActive(false);
-        }
-        if (currentWeapon == 2)
-        {
-            weapon1.SetActive(false);
-            weapon2.SetActive(true);
-        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)&&digging==0)
-            currentWeapon = 1;
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            currentWeapon = 2;
-        if (Input.GetButtonDown("Fire1") && movement.isground == true&&currentWeapon ==2)
-        {
-            rooted = true;
-            shovelAnimator.SetBool("isDigging", true);
-            
+            if (currentWeapon == 2)
+            {
+                weapon1.SetActive(false);
+                weapon2.SetActive(true);
+                if (Input.GetButtonDown("Fire1") && movement.isground == true)
+                {
+                    rooted = true;
+                    shovelAnimator.SetBool("isDigging", true);
+
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha1) && digging == 0)
+                currentWeapon = 1;
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                currentWeapon = 2;
         }
         if(rooted == true)
         {
@@ -134,33 +131,23 @@ public class shooting : MonoBehaviour
         //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
         GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
 
-        //for(int i=0; i<20; i++)
-        //{
-        //    GameObject garbage = Instantiate(bullet1, new Vector3(0,-5,0), Quaternion.identity);
-        //    garbage.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
-        //}
-
         newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
-        //RaycastHit aimed;
-        //if(Physics.Raycast(playerCam.transform.position,playerCam.transform.forward,out aimed))
-        //{
-        //    //Debug.Log(aimed.transform.name);
-        //    Vector3 targetDir = (aimed.point - gun.transform.position).normalized;
-        //    newbullet.GetComponent<Rigidbody>().AddForce(targetDir * bulletforce, ForceMode.Impulse);
-        //
-        //
-        //}
-        //else
 
-
-        //newbullet.GetComponent<Rigidbody>().AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.AddForce(playerCam.transform.forward * bulletforce, ForceMode.Impulse);
 
         shootSound.Play();
 
-        MPhoster.sendbullet(playerCam.transform.forward, gunPoint.transform.position);
+
+        MPhoster script = manager.GetComponent<MPhoster>();
+        if (script.enabled ==true)
+        {
+            MPhoster.sendbullet1(playerCam.transform.forward, gunPoint.transform.position);
+        }
+        else
+            MPclient.sendbullet2(playerCam.transform.forward, gunPoint.transform.position);
+
     }
     IEnumerator rofUP()
     {
