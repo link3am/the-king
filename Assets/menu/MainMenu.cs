@@ -38,7 +38,7 @@ public class MainMenu : MonoBehaviour
     }
     public void startgame()
     {
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
     }
     public void quitgame()
     {
@@ -94,9 +94,10 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(3);
     }
+    
     public void startD2()
     {
-
+        SceneManager.LoadScene(5);
     }
     public void joingame()
     {

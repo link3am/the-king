@@ -12,8 +12,8 @@ public class shooting : MonoBehaviour
     public GameObject bullet1;
     public GameObject weapon1;
     public GameObject weapon2;    
-    public float bulletforce = 35;
-    public int ammo = 3;
+    public float bulletforce = 25;
+    public int ammo = 10;
     public Text ammoDisplay;
     public Text ammoingHint;
     public Text fillammo;
@@ -123,15 +123,20 @@ public class shooting : MonoBehaviour
         else
             ammoingHint.text = "";
 
-
+        //end
+        if (PauseMenu.p1win)
+        {
+            weapon1.SetActive(true);
+            weapon2.SetActive(false);
+        }
     }
    
     void shoot()
     {
         //GameObject newbullet = Instantiate(bullet1, gunPoint.transform.position, Quaternion.identity);
-        GameObject newbullet = objectPooler.instance.getFromPool("bullet", gunPoint.transform.position, Quaternion.identity);
+        GameObject newbullet = objectPooler.instance.getFromPool("fakeball", gunPoint.transform.position, Quaternion.identity);
 
-        newbullet.GetComponent<snowball>().setshooter(this.gameObject, playerCam.transform.forward);
+        newbullet.GetComponent<fakeball>().setshooter(this.gameObject);
 
         Rigidbody rb = newbullet.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
@@ -156,5 +161,10 @@ public class shooting : MonoBehaviour
         fireRate = 1.0f;
     }
 
-   
+    public void resetweapon()
+    {
+        currentWeapon = 2;
+
+        ammo = 10;
+    }
 }

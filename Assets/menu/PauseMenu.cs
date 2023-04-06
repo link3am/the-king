@@ -34,13 +34,14 @@ public class PauseMenu : MonoBehaviour
 
 
     public static bool inpause;
-    public static bool ingaming;
+    public static bool ingaming = false;
+    public static bool p1win;
+    public static bool p2win;
     public GameObject pauseMenuUI;
     public GameObject overMenuUI;
     public TextMeshProUGUI showScore;
     public GameObject gamingUI;
-    public GameObject waitingUI;
-    public static bool waiting;
+
     public GameObject manager;
 
     string m_Path; 
@@ -52,10 +53,12 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
         pauseMenuUI.SetActive(false);
-        ingaming = false;
+        //gamingUI.SetActive(false);
+        //ingaming = false;
         inpause = false;
-        
-        waiting = true;
+        p1win = false;
+        p2win = false;
+
     }
 
     // Update is called once per frame
@@ -72,16 +75,14 @@ public class PauseMenu : MonoBehaviour
         {
             gamingUI.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
+            
         }
         else
         {
             gamingUI.SetActive(false);
             Cursor.lockState = CursorLockMode.Confined;
         }
-        if (waiting)
-            waitingUI.SetActive(true);
-        else
-            waitingUI.SetActive(false);
+
     }
 
     public void Resume()
@@ -194,30 +195,30 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    void gameover()
-    {
-
-        //normal
-        //gamingUI.SetActive(false);
-        //overMenuUI.SetActive(true);
-        //Time.timeScale = 0;
-        //Cursor.lockState = CursorLockMode.Confined;
-        //showScore.text = "Your score: " + teamscore.instance.getScore4team1();
-        //time trial
-        gamingUI.SetActive(false);
-        overMenuUI.SetActive(true);
-        Cursor.lockState = CursorLockMode.Confined;
-        if(GameObject.FindGameObjectsWithTag("enemy").Length != 0)
-        {
-            showScore.text = "You died!";
-        }
-        else
-            showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
-    }
-    public void tryagain()
-    {
-        
-        SceneManager.LoadScene(1);
-    }
+    //void gameover()
+    //{
+    //
+    //    //normal
+    //    //gamingUI.SetActive(false);
+    //    //overMenuUI.SetActive(true);
+    //    //Time.timeScale = 0;
+    //    //Cursor.lockState = CursorLockMode.Confined;
+    //    //showScore.text = "Your score: " + teamscore.instance.getScore4team1();
+    //    //time trial
+    //    gamingUI.SetActive(false);
+    //    overMenuUI.SetActive(true);
+    //    Cursor.lockState = CursorLockMode.Confined;
+    //    if(GameObject.FindGameObjectsWithTag("enemy").Length != 0)
+    //    {
+    //        showScore.text = "You died!";
+    //    }
+    //    else
+    //        showScore.text = "You did it !" + "\r\n" + "Time used: " + teamscore.instance.getTime4player() + "s";
+    //}
+    //public void tryagain()
+    //{
+    //    
+    //    //SceneManager.LoadScene(1);
+    //}
 
 }

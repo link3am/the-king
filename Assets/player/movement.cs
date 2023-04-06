@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class movement : MonoBehaviour
 {
 
@@ -24,11 +24,13 @@ public class movement : MonoBehaviour
     Vector3 velocity;
 
 
-    public float hitbackforce = 20f;
+    float hitbackforce = 15.0f;
     Vector3 hitbackMoving;
-
-    //
-    public GameObject enemy;
+    public GameObject hitUI;
+    float hitreduce = 0;
+    //respwan
+    Vector3 startingPOS;
+    bool respawning = false;
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("itemspd"))
@@ -43,8 +45,11 @@ public class movement : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("snowball"))
         {
-            HealthManager.instance.ChangeHealth(10);
-            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce);           
+            hitreduce = 255;
+            HealthManager.instance.ChangeHealth(20);
+            //float weaker = 2.0f-(HealthManager.instance.getHP()/100);
+            float weaker = 1+ (((101-HealthManager.instance.getHP())/100)*1.5f);
+            hitbackMoving += (collision.gameObject.GetComponent<snowball>().getdir() * hitbackforce * weaker);           
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
             //hitbackMoving += (GetComponent<Transform>().position - collision.gameObject.transform.position).normalized * hitbackforce;
             hitbackMoving.y = 0f;
@@ -55,6 +60,8 @@ public class movement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         speed = normalSpeed;
+        startingPOS = this.gameObject.transform.position;
+        Debug.Log(startingPOS);
     }
     // Update is called once per frame
     void Update()
@@ -86,6 +93,9 @@ public class movement : MonoBehaviour
            controller.Move(hitbackMoving * Time.deltaTime);
         }
         hitbackMoving = Vector3.Lerp(hitbackMoving, Vector3.zero, 3 * Time.deltaTime);
+        //hit ui reduce
+        hitUI.GetComponent<Image>().color = new Color32(255, 255, 225, (byte)hitreduce);
+        hitreduce = Mathf.Lerp(hitreduce, 0, Time.deltaTime);
         //
         //speed up item dur
         if(speedup)
@@ -101,17 +111,29 @@ public class movement : MonoBehaviour
         //apply jump and hitback
         controller.Move(velocity * Time.deltaTime);
 
-        if(gameObject.transform.position.y < -6)
-        {
-            //PauseMenu.isGameOver = true;
-        }
 
+        
+        
     }
-
+    private void FixedUpdate()
+    {
+        //fall out reset
+        if (gameObject.transform.position.y < -6 && !respawning)
+        {
+            respawning = true;
+            this.gameObject.transform.position = startingPOS;
+            teamscore.instance.score4team2(1);
+            HealthManager.instance.refillHP();
+            gameObject.GetComponent<shooting>().resetweapon();
+            hitbackMoving = Vector3.zero;
+            respawning = false;
+        }
+    }
     bool playercontrol()
     {
         if (!PauseMenu.ingaming || PauseMenu.inpause)
             return false;
         return true;
     }
+
 }

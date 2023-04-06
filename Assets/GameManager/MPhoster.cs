@@ -38,8 +38,19 @@ public class MPhoster : MonoBehaviour
 
     //ready game
     public static bool readyPlayer = false;
+    //locao score
+    int oldscore;
+    //select map
+    static bool isde1;
     void Start()
     {
+        //reset
+        readyPlayer = false;
+        //map
+        if (GameObject.Find("donutmap") != null)
+            isde1 = true;
+        else
+            isde1 = false;
         server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         string ipadress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString();//reference https://stackoverflow.com/questions/8709427/get-local-system-ip-address-using-c-sharp
         IPAddress ip = IPAddress.Parse(ipadress);
@@ -47,18 +58,22 @@ public class MPhoster : MonoBehaviour
         server.Listen(10);
         Debug.Log("start server");
 
-        pos = Vector3.zero;
-        facing = Vector3.zero;
+        //pos = enemy.transform.position;
+        //facing = enemy.transform.rotation.eulerAngles;
         server.BeginAccept(new AsyncCallback(AcceptCallback), null);
 
+        oldscore = teamscore.instance.getScore4team2();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        enemy.transform.position = pos;
-        enemy.transform.rotation = Quaternion.Euler(facing);       
+        if (readyPlayer)
+        {
+            enemy.transform.position = pos;
+            enemy.transform.rotation = Quaternion.Euler(facing);
+        }
 
         //send player data
         sposA = new float[] { splayer.transform.position.x, splayer.transform.position.y, splayer.transform.position.z };
@@ -70,6 +85,20 @@ public class MPhoster : MonoBehaviour
         {
             enemyshoot();
         }
+
+        //score
+        int newscore = teamscore.instance.getScore4team2();
+        if(newscore != oldscore)
+        {
+            //send local score
+            int localscore = teamscore.instance.getScore4team2();
+            byte[] scoreA = BitConverter.GetBytes(localscore);
+            if (client1 != null)
+                client1.BeginSend(scoreA, 0, scoreA.Length, 0, new AsyncCallback(SendCallback), client1);
+            else
+                Debug.Log("no target(score)");
+            oldscore = newscore;
+        }
     }
 
     private static void AcceptCallback(IAsyncResult result)
@@ -80,6 +109,13 @@ public class MPhoster : MonoBehaviour
         Debug.Log("client connected!!!   IP: " + ip);
         readyPlayer = true;
         byte[] temp = new byte[3];
+        if (!isde1)
+        {
+            temp = new byte[2];
+            Debug.Log("map2");
+        }
+        else
+            Debug.Log("map1");
         client.Send(temp);
         client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client);
     }
@@ -99,7 +135,7 @@ public class MPhoster : MonoBehaviour
         }
         if (rec == 24)
         {
-
+            Debug.Log("get shot");
             float[] temp = new float[3];
             float[] temp2 = new float[3];
             Buffer.BlockCopy(recvbuffer, 0, temp, 0, 12);
@@ -108,7 +144,12 @@ public class MPhoster : MonoBehaviour
             gunpos = new Vector3(temp2[0], temp2[1], temp2[2]);
             trigger = true;
         }
-
+        if (rec == 4)
+        {
+            int score = BitConverter.ToInt32(recvbuffer);
+            teamscore.instance.setscore4team1(score);
+        }
+        
         //send 
         client1.BeginSend(sendbuffer, 0, sendbuffer.Length, 0,new AsyncCallback(SendCallback), client1);
         client1.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client1);

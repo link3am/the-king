@@ -23,17 +23,23 @@ public class HealthManager : MonoBehaviour
 
     private void Update()
     {
-
+        healthText.text = health.ToString();
     }
 
     public void ChangeHealth(int healthValue)
     {
-
-        health -= healthValue;
-        healthText.text = health.ToString();   
+        if (health >= healthValue)
+            health -= healthValue;
+        else
+            health = 0;
     }
     public int getHP()
     {
         return health;
+    }
+    public void refillHP()
+    {
+        health = 100;
+        
     }
 }

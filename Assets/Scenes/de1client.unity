@@ -2308,8 +2308,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 901952894}
-  m_LocalRotation: {x: 0.18556702, y: 0.04391616, z: -0.0083020255, w: 0.9816147}
-  m_LocalPosition: {x: -4.4906693, y: 20, z: -49.723366}
+  m_LocalRotation: {x: 0.49561816, y: -0.5043438, z: 0.4956173, w: 0.50434464}
+  m_LocalPosition: {x: 10, y: 28.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2773,10 +2773,13 @@ MonoBehaviour:
   pools:
   - tag: bullet
     fab: {fileID: 3397910200895544667, guid: bab1f18cc5006c94892c76b3e093dd30, type: 3}
-    size: 10
+    size: 5
   - tag: snowpoint
     fab: {fileID: 6329432335326485864, guid: 4366b6b31b06bf64f984aca0a92487b5, type: 3}
     size: 1
+  - tag: fakeball
+    fab: {fileID: 3397910200895544667, guid: 717f11eb6ad20154cbdc7ed5eed0653d, type: 3}
+    size: 5
 --- !u!82 &1008868979
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2791,7 +2794,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -6217,6 +6220,10 @@ PrefabInstance:
     - target: {fileID: 6701368241897875369, guid: d15bb8995c9446a49bb2aaa748a33424, type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6701368241897875370, guid: d15bb8995c9446a49bb2aaa748a33424, type: 3}
+      propertyPath: hitbackforce
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 6701368241897875371, guid: d15bb8995c9446a49bb2aaa748a33424, type: 3}
       propertyPath: m_RootOrder

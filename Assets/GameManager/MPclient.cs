@@ -15,7 +15,7 @@ using System.Net.Sockets;
 public class MPclient : MonoBehaviour
 {
 
-    private static Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    private static Socket client;
     //static EndPoint serverEP = new IPEndPoint(IPAddress.Parse("10.0.0.126"), 8888);
     public GameObject player;
     GameObject temp;
@@ -40,8 +40,21 @@ public class MPclient : MonoBehaviour
     static Vector3 gunpos;
     private static byte[] bbuffer = new byte[512];
 
+    //score
+    int oldscore;
+    //map
+    static int currentMap = 1;
+    public GameObject de1;
+    public GameObject de2;
     void Start()
     {
+        //reset
+        currentMap = 1;
+        connected = false;
+        client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+
+        //
         temp = GameObject.FindGameObjectWithTag("IP");
         //if (temp == null)
         //    SceneManager.LoadScene(0);
@@ -50,11 +63,26 @@ public class MPclient : MonoBehaviour
         client.BeginConnect(IPAddress.Parse(getip), 8888, new AsyncCallback(ConnectCallBack), null);
 
         trigger = false;
+        oldscore = teamscore.instance.getScore4team2();
+
+        //initial p2 possition
+        pos = enemy.transform.position;
+        facing = enemy.transform.rotation.eulerAngles;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(currentMap==1)
+        {
+            de1.SetActive(true);
+            de2.SetActive(false);
+        }
+        if (currentMap == 2)
+        {
+            de1.SetActive(false);
+            de2.SetActive(true);
+        }
         //pos = new float[] { player.transform.position.x, player.transform.position.y, player.transform.position.z };
         //bpos = new byte[pos.Length * 4];
         //Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
@@ -68,6 +96,15 @@ public class MPclient : MonoBehaviour
             Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
             Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
             client.Send(sendbuffer);
+            //send local score
+            int newscore = teamscore.instance.getScore4team2();
+            if (newscore != oldscore)
+            {
+                int localscore = teamscore.instance.getScore4team2();
+                byte[] scoreA = BitConverter.GetBytes(localscore);
+                client.Send(scoreA);
+                oldscore = newscore;
+            }
             //recv part
             client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client);
             enemy.transform.position = pos;
@@ -83,6 +120,7 @@ public class MPclient : MonoBehaviour
         if (timer >= timeout)
         {
             Destroy(temp);
+            PauseMenu.ingaming = false;
             Cursor.lockState = CursorLockMode.Confined;
             SceneManager.LoadScene(1); 
         }
@@ -104,6 +142,7 @@ public class MPclient : MonoBehaviour
         }
         if (rec == 24)
         {
+            Debug.Log("get shot");
             float[] temp = new float[3];
             float[] temp2 = new float[3];
             Buffer.BlockCopy(recvbuffer, 0, temp, 0, 12);
@@ -112,7 +151,11 @@ public class MPclient : MonoBehaviour
             gunpos = new Vector3(temp2[0], temp2[1], temp2[2]);
             trigger = true;
         }
-
+        if(rec ==4)
+        {
+            int score = BitConverter.ToInt32(recvbuffer);
+            teamscore.instance.setscore4team1(score);
+        }
         client.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), socket);
     }
 
@@ -155,7 +198,18 @@ public class MPclient : MonoBehaviour
         //Debug.Log("recved int: " + rec);
         if(rec ==3)
         {
+            currentMap = 1;
+            connected = true;           
+        }
+        if (rec == 2)
+        {
+            currentMap = 2;
             connected = true;
         }
+    }
+    public static void clientclose()
+    {
+        client.Close();
+        Debug.Log("client close");
     }
 }

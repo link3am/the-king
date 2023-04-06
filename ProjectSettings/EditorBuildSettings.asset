@@ -15,9 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/enemyquit.unity
     guid: 5d5406789c16cde4591858ea3c9e03d1
   - enabled: 1
-    path: Assets/Scenes/level1.unity
+    path: Assets/Scenes/de1host.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/de1client.unity
-    guid: 45a61de9e904fcc43ac6c68230a59c42
+    path: Assets/Scenes/de1host 1.unity
+    guid: 5cb14a8ab204e10469dff88a96e6003c
+  - enabled: 1
+    path: Assets/Scenes/de2host.unity
+    guid: b932d2f655ec3dd45b73a2dc837adb17
   m_configObjects: {}
