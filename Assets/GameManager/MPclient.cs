@@ -71,7 +71,8 @@ public class MPclient : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+
+    void FixedUpdate()
     {
         if(currentMap==1)
         {
@@ -89,13 +90,18 @@ public class MPclient : MonoBehaviour
         //client.Send(bpos);
         if (connected)
         {
-            //send player data
-            sposA = new float[] { player.transform.position.x, player.transform.position.y, player.transform.position.z };
-            sfacingA = new float[] { player.transform.eulerAngles.x, player.transform.eulerAngles.y, player.transform.eulerAngles.z };
-            sendbuffer = new byte[25];
-            Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
-            Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
-            client.Send(sendbuffer);
+
+                //send player data
+                sposA = new float[] { player.transform.position.x, player.transform.position.y, player.transform.position.z };
+                sfacingA = new float[] { player.transform.eulerAngles.x, player.transform.eulerAngles.y, player.transform.eulerAngles.z };
+                sendbuffer = new byte[25];
+                Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
+                Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
+                client.Send(sendbuffer);
+
+
+
+
             //send local score
             int newscore = teamscore.instance.getScore4team2();
             if (newscore != oldscore)

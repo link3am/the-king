@@ -83,8 +83,8 @@ public class shooting : MonoBehaviour
                     ammo -= 1;
                     gunAnimator.SetTrigger("shot");
                 }
-                if (Input.GetButtonDown("Fire2"))
-                    ammo += 3;
+                //if (Input.GetButtonDown("Fire2"))
+                //    ammo += 3;
                 weapon1.SetActive(true);
                 weapon2.SetActive(false);
             }

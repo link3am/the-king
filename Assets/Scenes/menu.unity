@@ -10217,8 +10217,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -425.15, y: -547}
-  m_SizeDelta: {x: 310, y: 300}
+  m_AnchoredPosition: {x: -437, y: -547}
+  m_SizeDelta: {x: 380, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1933195590
 MonoBehaviour:
@@ -10253,7 +10253,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Host IP: \n10.0.0.3am"
+  m_Text: "Host IP: \n255.255.255.255"
 --- !u!222 &1933195591
 CanvasRenderer:
   m_ObjectHideFlags: 0

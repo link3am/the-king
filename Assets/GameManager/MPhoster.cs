@@ -36,6 +36,7 @@ public class MPhoster : MonoBehaviour
     private static float[] sfacingA;
     private static byte[] sendbuffer = new byte[512];
 
+
     //ready game
     public static bool readyPlayer = false;
     //locao score
@@ -67,21 +68,23 @@ public class MPhoster : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (readyPlayer)
         {
             enemy.transform.position = pos;
             enemy.transform.rotation = Quaternion.Euler(facing);
         }
+ 
+            //send player data
+            sposA = new float[] { splayer.transform.position.x, splayer.transform.position.y, splayer.transform.position.z };
+            sfacingA = new float[] { splayer.transform.eulerAngles.x, splayer.transform.eulerAngles.y, splayer.transform.eulerAngles.z };
+            sendbuffer = new byte[25];
+            Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
+            Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
+            client1.BeginSend(sendbuffer, 0, sendbuffer.Length, 0, new AsyncCallback(SendCallback), client1);
 
-        //send player data
-        sposA = new float[] { splayer.transform.position.x, splayer.transform.position.y, splayer.transform.position.z };
-        sfacingA = new float[] { splayer.transform.eulerAngles.x, splayer.transform.eulerAngles.y, splayer.transform.eulerAngles.z };
-        sendbuffer = new byte[25];
-        Buffer.BlockCopy(sposA, 0, sendbuffer, 0, 12);
-        Buffer.BlockCopy(sfacingA, 0, sendbuffer, 12, 12);
-        if(trigger ==true)
+        if (trigger ==true)
         {
             enemyshoot();
         }
@@ -93,7 +96,7 @@ public class MPhoster : MonoBehaviour
             //send local score
             int localscore = teamscore.instance.getScore4team2();
             byte[] scoreA = BitConverter.GetBytes(localscore);
-            if (client1 != null)
+            if (readyPlayer)
                 client1.BeginSend(scoreA, 0, scoreA.Length, 0, new AsyncCallback(SendCallback), client1);
             else
                 Debug.Log("no target(score)");
@@ -151,7 +154,7 @@ public class MPhoster : MonoBehaviour
         }
         
         //send 
-        client1.BeginSend(sendbuffer, 0, sendbuffer.Length, 0,new AsyncCallback(SendCallback), client1);
+        //client1.BeginSend(sendbuffer, 0, sendbuffer.Length, 0,new AsyncCallback(SendCallback), client1);
         client1.BeginReceive(recvbuffer, 0, recvbuffer.Length, 0, new AsyncCallback(ReceiveCallback), client1);
     }
     private static void SendCallback(IAsyncResult result)
@@ -167,8 +170,9 @@ public class MPhoster : MonoBehaviour
         float[] temp2 = { gun.x, gun.y, gun.z };
         Buffer.BlockCopy(temp, 0, bbuffer, 0, 12);
         Buffer.BlockCopy(temp2, 0, bbuffer, 12, 12);
-        if (client1 != null)
-            client1.BeginSend(bbuffer, 0, bbuffer.Length, 0, new AsyncCallback(SendCallback), client1);
+        if (readyPlayer)
+            //client1.BeginSend(bbuffer, 0, bbuffer.Length, 0, new AsyncCallback(SendCallback), client1);
+            client1.Send(bbuffer);
         else
             Debug.Log("no target");
     }
